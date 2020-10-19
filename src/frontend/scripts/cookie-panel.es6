@@ -105,6 +105,7 @@
 
     document.getElementById("cookie-panel-banner-settings-button").addEventListener("click", () => {
       showCookiePanelSettings();
+      document.getElementById("cookie-panel-settings").style.display = "block";
     });
 
     return banner;
@@ -136,7 +137,7 @@
   const renderSettingsPanel = () => {
     const html = `
       <div class="cookie-panel-settings" id="cookie-panel-settings">
-        <div class="cookie-panel-settings__inner">
+        <div class="cookie-panel-settings__inner ${config.theme}">
           <h2>${config.title}</h2>
           <div class="cookie-panel-settings__categories">${renderCategories(config.categories)}</div>
           <div class="cookie-panel-settings__buttons">
