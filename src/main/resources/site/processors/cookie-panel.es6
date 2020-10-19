@@ -20,7 +20,8 @@ const getRejectedCookies = (categories, res) => {
         value: cookie["cookie-value-rejected"],
         path: "/",
         secure: false,
-        httpOnly: false
+        httpOnly: false,
+        maxAge: 31556926
       };
     });
   });
@@ -68,6 +69,7 @@ exports.responseProcessor = (req, res) => {
   };
 
   res.pageContributions.headEnd = libs.util.forceArray(res.pageContributions.headEnd);
+  res.pageContributions.bodyEnd = libs.util.forceArray(res.pageContributions.bodyEnd);
   const script = `<script src="${libs.portal.assetUrl({ path: "js/main.js" })}" defer></script>`;
   res.pageContributions.bodyEnd.push(script);
 
@@ -77,7 +79,6 @@ exports.responseProcessor = (req, res) => {
   }
 
   const html = render(model);
-  res.pageContributions.bodyEnd = libs.util.forceArray(res.pageContributions.bodyEnd);
   res.pageContributions.bodyEnd.push(html);
 
   // If no control cookie is set, reject all cookies by default to achieve opt-in functionality
@@ -85,5 +86,9 @@ exports.responseProcessor = (req, res) => {
     res.cookies = getRejectedCookies(siteConfig["cookie-panel-categories"], res);
   }
 
+  // if (!res.headers) res.headers = {};
+  // res.headers["Set-Cookie"] = "test=hei; Path=/; Max-Age=31556926";
+
+  // log.info(JSON.stringify(res, null, 4));
   return res;
 };

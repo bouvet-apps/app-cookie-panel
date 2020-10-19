@@ -30,15 +30,30 @@
     return b ? b.pop() : "";
   };
 
-  const setCookie = (name, value, days) => {
-    let expires = "";
-    if (days) {
-      const date = new Date();
-      date.setTime(date.getTime() + (days * 24 * 60 * 60 * 1000));
-      expires = `; expires=${date.toUTCString()}`;
-    }
-    document.cookie = `${name}=${value || ""}${expires}; path=/`;
+  const setCookie = (name, value) => {
+    const date = new Date();
+    date.setTime(date.getTime() + (365 * 24 * 60 * 60 * 1000));
+    document.cookie = `${name}=${value || ""}; Expires=${date.toUTCString()}; Max-Age=${365 * 24 * 60 * 60}; Path=/`;
   };
+
+  // -- Temporary fix for broken cookie handling in XP
+  const deleteCookie = (name) => {
+    const pathname = window.location.pathname;
+    const path = pathname.substring(0, pathname.lastIndexOf("/"));
+    const cookie = `${name}=""; Expires=${new Date(0).toUTCString()}; Path=${path}`;
+    document.cookie = cookie;
+  };
+
+  const resetCookiePaths = () => {
+    forceArray(config.categories).forEach((category) => {
+      forceArray(category.cookies).forEach((cookie) => {
+        const value = getCookieValue(cookie["cookie-name"]);
+        deleteCookie(cookie["cookie-name"]);
+        setCookie(cookie["cookie-name"], value);
+      });
+    });
+  };
+  // -- END OF Temporary fix for broken cookie handling in XP
 
   const saveCookieSettings = () => {
     forceArray(config.categories).forEach((category) => {
@@ -64,7 +79,6 @@
     if (config.page.reloadOnSave) document.location.href = removeParameter(document.location.href, "cookie_settings");
   };
 
-
   // ---
   const renderBanner = () => {
     const html = `<div class="cookie-panel-banner ${config.theme}" id="cookie-panel-banner">
@@ -80,7 +94,9 @@
     </div>`;
     const banner = document.createElement("div");
     banner.innerHTML = html;
-    document.body.prepend(banner);
+
+    // document.body.prepend(banner);
+    document.body.insertAdjacentElement("afterbegin", banner);
 
     document.getElementById("cookie-panel-banner-accept-button").addEventListener("click", () => {
       document.getElementById("cookie-panel-banner").style.display = "none";
@@ -132,7 +148,8 @@
 
     const settingsPanel = document.createElement("div");
     settingsPanel.innerHTML = html;
-    document.body.prepend(settingsPanel);
+    // document.body.prepend(settingsPanel);
+    document.body.insertAdjacentElement("afterbegin", settingsPanel);
 
     // Loop through category cookies and sync switches
     forceArray(config.categories).forEach((category) => {
@@ -175,11 +192,13 @@
     // TODO Focus
   };
 
+
   const runSetup = () => {
     config = getData("config");
     config.page = getData("page-config");
 
     if (!config.accepted) {
+      resetCookiePaths(); // -- Temporary fix for broken cookie handling in XP
       bannerContainer = renderBanner();
     }
 
