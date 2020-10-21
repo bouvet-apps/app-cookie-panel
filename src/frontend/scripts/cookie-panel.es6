@@ -105,7 +105,7 @@
 
     document.getElementById("cookie-panel-banner-settings-button").addEventListener("click", () => {
       showCookiePanelSettings();
-      document.getElementById("cookie-panel-settings").style.display = "block";
+      document.getElementById("cookie-panel-settings").style.cssText = "display: flex; justify-content: center; align-items: center;";
     });
 
     return banner;
