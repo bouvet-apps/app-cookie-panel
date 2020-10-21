@@ -74,6 +74,12 @@ exports.responseProcessor = (req, res) => {
   res.pageContributions.bodyEnd.push(script);
 
   if (model.layout !== "none") {
+    /*const styleButtons = `<link rel="stylesheet" href="${libs.portal.assetUrl({ path: "css/buttons.css" })}"/>`;
+    const styleBanner = `<link rel="stylesheet" href="${libs.portal.assetUrl({ path: "css/cookie-panel-banner.css" })}"/>`;
+    const styleSettings = `<link rel="stylesheet" href="${libs.portal.assetUrl({ path: "css/cookie-panel-settings.css" })}"/>`
+    res.pageContributions.headEnd.push(styleButtons);
+    res.pageContributions.headEnd.push(styleBanner);
+    res.pageContributions.headEnd.push(styleSettings);*/
     const style = `<link rel="stylesheet" href="${libs.portal.assetUrl({ path: "css/main.css" })}"/>`;
     res.pageContributions.headEnd.push(style);
   }
