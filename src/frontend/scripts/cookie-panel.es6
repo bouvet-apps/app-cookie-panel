@@ -114,11 +114,11 @@
   const renderCategory = category => `
       <div class="cookie-panel-settings__categories__category">
         <div class="cookie-panel-settings__categories__category-header">
+          <h3>${category.title || ""}</h3>
           <label class="cookie-panel-switch">
             <input ${(category.default ? "checked disabled" : "")} type="checkbox" id="${category.id}">
             <span class="cookie-panel-switch__toggle"></span>
           </label>
-          <h3>${category.title || ""}</h3>
         </div>
         <p>${category.description || ""}</p>
         <hr/>
