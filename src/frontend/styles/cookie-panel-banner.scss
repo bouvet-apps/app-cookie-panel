@@ -1,12 +1,25 @@
-.cookie-panel-banner {
-  padding: 2rem;
+@import "./responsive";
+
+body {
+  font-family: sans-serif;
+}
+
+.cookie-panel-banner__wrapper {
   position: fixed;
   width: 100%;
   bottom: 0;
   z-index: 2;
 }
 
-.cookie-panel-banner__inner {
-  max-width: 1400px;
-  margin: auto;
+.cookie-panel-banner__container {
+  position: relative;
+  margin: 3rem;
+
+  @include mobile-down {
+    margin: 2rem;
+  }
+}
+
+.cookie-panel-banner__content {
+  padding-bottom: 2rem;
 }

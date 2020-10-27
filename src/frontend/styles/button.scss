@@ -1,7 +1,10 @@
+@import "./responsive";
+
 //Button
 .cookie-panel-banner__buttons,
 .cookie-panel-settings__buttons {
   float: right;
+  padding-bottom: 2rem;
 
   button {
     background-color: transparent;
@@ -9,14 +12,43 @@
     font-weight: bold;
     border-radius: 22px;
   }
+
+  @include mobile-down {
+    display: flex;
+    width: 100%;
+    justify-content: space-between;
+    align-items: center;
+  }
 }
 
-.cookie-panel-banner__buttons button:nth-child(2) {
-  margin-left: 2rem;
+.cookie-panel-banner__buttons button:nth-child(1) {
+  margin-right: 2rem;
+
+  @include mobile-down {
+    margin-right: 0;
+    bottom: none;
+    right: none;
+  }
 }
 
 .cookie-panel-settings__buttons button {
   margin-left: 2rem;
+
+  @include mobile-down {
+    margin-left: 0;
+    bottom: none;
+    right: none;
+  }
+}
+
+#cookie-panel-settings-save-button {
+  margin-left: 2rem;
+
+  @include mobile-down {
+    margin-left: 0;
+    bottom: none;
+    right: none;
+  }
 }
 
 //Switch
