@@ -81,10 +81,12 @@
 
   // ---
   const renderBanner = () => {
-    const html = `<div class="cookie-panel-banner ${config.theme}" id="cookie-panel-banner">
-    <div class="cookie-panel-banner__inner">
+    const html = `<div class="cookie-panel-banner__wrapper ${config.theme}" id="cookie-panel-banner">
+    <div class="cookie-panel-banner__container">
+    <div class="cookie-panel-banner__content">
       ${config.title ? `<h2 class="cookie-panel-banner__title">${config.title}</h2>` : ""}
       ${config.description ? `<p class="cookie-panel-banner__description">${config.description}</p>` : ""}
+      </div>
       <div class="cookie-panel-banner__buttons">
         ${config.buttonOrder === "accept-left"
     ? `<button id="cookie-panel-banner-accept-button">${config.acceptLabel}</button><button id="cookie-panel-banner-settings-button">${config.settingsLabel}</button>`
@@ -105,6 +107,7 @@
 
     document.getElementById("cookie-panel-banner-settings-button").addEventListener("click", () => {
       showCookiePanelSettings();
+      document.getElementById("cookie-panel-settings").style.cssText = "display: flex; justify-content: center; align-items: center;";
     });
 
     return banner;
@@ -113,11 +116,11 @@
   const renderCategory = category => `
       <div class="cookie-panel-settings__categories__category">
         <div class="cookie-panel-settings__categories__category-header">
+          <h3>${category.title || ""}</h3>
           <label class="cookie-panel-switch">
             <input ${(category.default ? "checked disabled" : "")} type="checkbox" id="${category.id}">
             <span class="cookie-panel-switch__toggle"></span>
           </label>
-          <h3>${category.title || ""}</h3>
         </div>
         <p>${category.description || ""}</p>
         <hr/>
@@ -136,12 +139,14 @@
   const renderSettingsPanel = () => {
     const html = `
       <div class="cookie-panel-settings" id="cookie-panel-settings">
-        <div class="cookie-panel-settings__inner">
-          <h2>${config.title}</h2>
-          <div class="cookie-panel-settings__categories">${renderCategories(config.categories)}</div>
-          <div class="cookie-panel-settings__buttons">
-            <a href="${config.readMoreLink}">${config.readMoreLabel}</a>
-            <button id="cookie-panel-settings-save-button">${config.saveLabel}</button>
+        <div class="cookie-panel-settings__container ${config.theme}">
+          <div class="cookie-panel-settings__wrapper">
+            <h2>${config.title}</h2>
+            <div class="cookie-panel-settings__categories">${renderCategories(config.categories)}</div>
+            <div class="cookie-panel-settings__buttons">
+              <a href="${config.readMoreLink}">${config.readMoreLabel}</a>
+              <button id="cookie-panel-settings-save-button">${config.saveLabel}</button>
+            </div>
           </div>
         </div>
       </div>`;
