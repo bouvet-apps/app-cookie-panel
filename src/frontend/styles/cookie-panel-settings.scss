@@ -17,14 +17,12 @@
   overflow-y: scroll;
   position: relative;
   margin: auto;
-  //padding: 3rem;
   border: 1px solid #888;
   width: 60%;
 
   @include mobile-down {
     width: auto;
     height: auto;
-    //padding: 2rem;
   }
 }
 
