@@ -140,8 +140,9 @@
           <h2>${config.title}</h2>
           <div class="cookie-panel-settings__categories">${renderCategories(config.categories)}</div>
           <div class="cookie-panel-settings__buttons">
-            <a href="${config.readMoreLink}">${config.readMoreLabel}</a>
-            <button id="cookie-panel-settings-save-button">${config.saveLabel}</button>
+          ${config.buttonOrder === "accept-left"
+    ? `<button id="cookie-panel-settings-save-button">${config.saveLabel}</button><a href="${config.readMoreLink}">${config.readMoreLabel}</a>`
+    : `<a href="${config.readMoreLink}">${config.readMoreLabel}</a><button id="cookie-panel-settings-save-button">${config.saveLabel}</button>`}
           </div>
         </div>
       </div>`;
