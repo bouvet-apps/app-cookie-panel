@@ -107,6 +107,8 @@
     </div>
     </div>`;
     const banner = document.createElement("div");
+    banner.setAttribute("id", "cookie-panel-banner__wrapper");
+
     banner.innerHTML = html;
 
     // document.body.prepend(banner);
@@ -163,8 +165,9 @@
 
     const settingsPanel = document.createElement("div");
     settingsPanel.innerHTML = html;
+    const banner = document.getElementById("cookie-panel-banner__wrapper");
     // document.body.prepend(settingsPanel);
-    document.body.insertAdjacentElement("afterbegin", settingsPanel);
+    banner.insertAdjacentElement("afterend", settingsPanel);
 
     // Loop through category cookies and sync switches
     forceArray(config.categories).forEach((category) => {
