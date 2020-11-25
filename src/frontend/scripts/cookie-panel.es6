@@ -55,6 +55,17 @@
   };
   // -- END OF Temporary fix for broken cookie handling in XP
 
+  const reloadOnSave = () => {
+    if (config.page.reloadOnSave) {
+      if (/[?&]cookie_settings=/.test(document.location.search)) {
+        document.location.href = removeParameter(document.location.href, "cookie_settings");
+      } else {
+        // eslint-disable-next-line
+        document.location.reload(true);
+      }
+    }
+  };
+
   const saveCookieSettings = () => {
     forceArray(config.categories).forEach((category) => {
       const enabled = document.getElementById(category.id).checked;
@@ -65,7 +76,8 @@
     });
     setCookie(config.controlCookie, "true");
 
-    if (config.page.reloadOnSave) document.location.href = removeParameter(document.location.href, "cookie_settings");
+    // if (config.page.reloadOnSave) document.location.href = removeParameter(document.location.href, "cookie_settings");
+    reloadOnSave();
   };
 
   const acceptAllCookies = () => {
@@ -76,8 +88,10 @@
     });
     setCookie(config.controlCookie, "true");
 
-    if (config.page.reloadOnSave) document.location.href = removeParameter(document.location.href, "cookie_settings");
+    // if (config.page.reloadOnSave) document.location.href = removeParameter(document.location.href, "cookie_settings");
+    reloadOnSave();
   };
+
 
   // ---
   const renderBanner = () => {
