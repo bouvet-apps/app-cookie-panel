@@ -151,9 +151,9 @@
 
   const renderSettingsPanel = () => {
     const html = `
-      <div class="cookie-panel-settings" id="cookie-panel-settings">
+      <div role="dialog" class="cookie-panel-settings" id="cookie-panel-settings" aria-labelledby="cookie-panel-settings-title">
         <div class="cookie-panel-settings__inner">
-          <h2>${config.title}</h2>
+          <h2 id="cookie-panel-settings-title">${config.title}</h2>
           <div class="cookie-panel-settings__categories">${renderCategories(config.categories)}</div>
           <div class="cookie-panel-settings__buttons">
           ${config.buttonOrder === "accept-left"
