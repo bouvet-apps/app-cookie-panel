@@ -16,6 +16,9 @@
         <input name="cookie-panel-accept-button-label" type="TextLine">
           <label>Accept all button label</label>
         </input>
+        <input name="cookie-panel-reject-button-label" type="TextLine">
+          <label>Reject all button label</label>
+        </input>
         <input name="cookie-panel-save-button-label" type="TextLine">
           <label>Save button label</label>
         </input>

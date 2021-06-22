@@ -92,6 +92,17 @@
     reloadOnSave();
   };
 
+  const rejectAllCookies = () => {
+    forceArray(config.categories).forEach((category) => {
+      forceArray(category.cookies).forEach((cookie) => {
+        setCookie(cookie["cookie-name"], cookie["cookie-value-rejected"]);
+      });
+    });
+    setCookie(config.controlCookie, "true");
+
+    reloadOnSave();
+  };
+
 
   // ---
   const renderBanner = () => {
@@ -101,8 +112,9 @@
       ${config.description ? `<p class="cookie-panel-banner__description">${config.description}</p>` : ""}
       <div class="cookie-panel-banner__buttons">
         ${config.buttonOrder === "accept-left"
-    ? `<button id="cookie-panel-banner-accept-button">${config.acceptLabel}</button><button id="cookie-panel-banner-settings-button">${config.settingsLabel}</button>`
-    : `<button id="cookie-panel-banner-settings-button">${config.settingsLabel}</button><button id="cookie-panel-banner-accept-button">${config.acceptLabel}</button>`}
+    ? `<button id="cookie-panel-banner-accept-button">${config.acceptLabel}</button><button id="cookie-panel-banner-reject-button">${config.rejectLabel}</button>`
+    : `<button id="cookie-panel-banner-reject-button">${config.rejectLabel}</button><button id="cookie-panel-banner-accept-button">${config.acceptLabel}</button>`}
+        <button id="cookie-panel-banner-settings-button">${config.settingsLabel}</button>
       </div>
     </div>
     </div>`;
@@ -117,6 +129,11 @@
     document.getElementById("cookie-panel-banner-accept-button").addEventListener("click", () => {
       document.getElementById("cookie-panel-banner").style.display = "none";
       acceptAllCookies();
+    });
+
+    document.getElementById("cookie-panel-banner-reject-button").addEventListener("click", () => {
+      document.getElementById("cookie-panel-banner").style.display = "none";
+      rejectAllCookies();
     });
 
     document.getElementById("cookie-panel-banner-settings-button").addEventListener("click", () => {
