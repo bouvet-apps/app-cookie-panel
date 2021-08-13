@@ -92,6 +92,16 @@
     reloadOnSave();
   };
 
+  const rejectAllCookies = () => {
+    forceArray(config.categories).forEach((category) => {
+      forceArray(category.cookies).forEach((cookie) => {
+        setCookie(cookie["cookie-name"], cookie["cookie-value-rejected"]);
+      });
+    });
+    setCookie(config.controlCookie, "true");
+
+    reloadOnSave();
+  };
 
   // ---
   const renderBanner = () => {
@@ -101,8 +111,12 @@
       ${config.description ? `<p class="cookie-panel-banner__description">${config.description}</p>` : ""}
       <div class="cookie-panel-banner__buttons">
         ${config.buttonOrder === "accept-left"
-    ? `<button id="cookie-panel-banner-accept-button">${config.acceptLabel}</button><button id="cookie-panel-banner-settings-button">${config.settingsLabel}</button>`
-    : `<button id="cookie-panel-banner-settings-button">${config.settingsLabel}</button><button id="cookie-panel-banner-accept-button">${config.acceptLabel}</button>`}
+        ? `<button id="cookie-panel-banner-accept-button">${config.acceptLabel}</button>
+          <button id="cookie-panel-banner-reject-button">${config.rejectLabel}</button>
+          <button id="cookie-panel-banner-settings-button">${config.settingsLabel}</button>`
+        : `<button id="cookie-panel-banner-settings-button">${config.settingsLabel}</button>
+          <button id="cookie-panel-banner-accept-button">${config.acceptLabel}</button>
+          <button id="cookie-panel-banner-reject-button">${config.rejectLabel}</button>`}
       </div>
     </div>
     </div>`;
@@ -121,6 +135,11 @@
 
     document.getElementById("cookie-panel-banner-settings-button").addEventListener("click", () => {
       showCookiePanelSettings();
+    });
+
+    document.getElementById("cookie-panel-banner-reject-button").addEventListener("click", () => {
+      document.getElementById("cookie-panel-banner").style.display = "none";
+      rejectAllCookies();
     });
 
     return banner;
@@ -157,8 +176,8 @@
           <div class="cookie-panel-settings__categories">${renderCategories(config.categories)}</div>
           <div class="cookie-panel-settings__buttons">
           ${config.buttonOrder === "accept-left"
-    ? `<button id="cookie-panel-settings-save-button">${config.saveLabel}</button><a href="${config.readMoreLink}">${config.readMoreLabel}</a>`
-    : `<a href="${config.readMoreLink}">${config.readMoreLabel}</a><button id="cookie-panel-settings-save-button">${config.saveLabel}</button>`}
+        ? `<button id="cookie-panel-settings-save-button">${config.saveLabel}</button><a href="${config.readMoreLink}">${config.readMoreLabel}</a>`
+        : `<a href="${config.readMoreLink}">${config.readMoreLabel}</a><button id="cookie-panel-settings-save-button">${config.saveLabel}</button>`}
           </div>
         </div>
       </div>`;
@@ -209,7 +228,6 @@
 
     // TODO Focus
   };
-
 
   const runSetup = () => {
     config = getData("config");

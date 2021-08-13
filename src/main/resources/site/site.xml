@@ -16,6 +16,9 @@
         <input name="cookie-panel-accept-button-label" type="TextLine">
           <label>Accept all button label</label>
         </input>
+        <input name="cookie-panel-reject-button-label" type="TextLine">
+          <label>Reject all button label</label>
+        </input>
         <input name="cookie-panel-save-button-label" type="TextLine">
           <label>Save button label</label>
         </input>
@@ -44,8 +47,8 @@
           <label>Button order</label>
           <occurrences minimum="1" maximum="1" />
           <config>
-              <option value="accept-left">Accept left, Read more right</option>
-              <option value="accept-right">Read more left, Accept right</option>
+            <option value="accept-left">Accept left, Read more right</option>
+            <option value="accept-right">Read more left, Accept right</option>
           </config>
           <default>accept-right</default>
         </input>
