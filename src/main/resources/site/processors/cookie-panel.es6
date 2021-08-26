@@ -43,7 +43,7 @@ exports.responseProcessor = (req, res) => {
 
   if (req.cookies[controlCookieName] === "true"
     && !req.params.cookie_settings
-    && res.headers[HEADER_NAME] !== HEADER_VALUE_INCLUDE) {
+    && !(res.headers[HEADER_NAME] === HEADER_VALUE_INCLUDE || res.headers[HEADER_NAME.toLowerCase()] === HEADER_VALUE_INCLUDE)) {
     return res;
   }
 
