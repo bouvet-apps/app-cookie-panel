@@ -55,8 +55,8 @@
   };
   // -- END OF Temporary fix for broken cookie handling in XP
 
-  const reloadOnSave = () => {
-    if (config.page.reloadOnSave) {
+  const reloadOnSave = (forceReload) => {
+    if (config.page.reloadOnSave || forceReload) {
       if (/[?&]cookie_settings=/.test(document.location.search)) {
         document.location.href = removeParameter(document.location.href, "cookie_settings");
       } else {
@@ -65,23 +65,36 @@
     }
   };
 
+  const runOnCookieConsent = (cookieName) => {
+    if (window.__RUN_ON_COOKIE_CONSENT__ && window.__RUN_ON_COOKIE_CONSENT__[cookieName] && typeof window.__RUN_ON_COOKIE_CONSENT__[cookieName] === "function") {
+      window.__RUN_ON_COOKIE_CONSENT__[cookieName]();
+    }
+  };
+
   const saveCookieSettings = () => {
+    let didDisable = false;
     forceArray(config.categories).forEach((category) => {
       const enabled = document.getElementById(category.id).checked;
       forceArray(category.cookies).forEach((cookie) => {
         const value = enabled ? cookie["cookie-value-accepted"] : cookie["cookie-value-rejected"];
+        const previousValue = getCookieValue(cookie["cookie-name"]);
+        if (!enabled && previousValue && previousValue !== value) {
+          didDisable = true;
+        }
+        if (enabled) runOnCookieConsent(cookie["cookie-name"], value);
         setCookie(cookie["cookie-name"], value);
       });
     });
     setCookie(config.controlCookie, "true");
 
     // if (config.page.reloadOnSave) document.location.href = removeParameter(document.location.href, "cookie_settings");
-    reloadOnSave();
+    reloadOnSave(didDisable);
   };
 
   const acceptAllCookies = () => {
     forceArray(config.categories).forEach((category) => {
       forceArray(category.cookies).forEach((cookie) => {
+        runOnCookieConsent(cookie["cookie-name"], cookie["cookie-value-accepted"]);
         setCookie(cookie["cookie-name"], cookie["cookie-value-accepted"]);
       });
     });
@@ -182,7 +195,7 @@
     });
 
     document.getElementById("cookie-panel-settings-save-button").addEventListener("click", () => {
-      document.getElementById("cookie-panel-settings").style.display = "none";
+      settingsPanel.style.display = "none";
       saveCookieSettings();
     });
 
