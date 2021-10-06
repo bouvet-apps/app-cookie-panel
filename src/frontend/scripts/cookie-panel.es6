@@ -113,8 +113,8 @@
       ${config.description ? `<p class="cookie-panel-banner__description">${config.description}</p>` : ""}
       <div class="cookie-panel-banner__buttons">
         ${config.buttonOrder === "accept-left"
-        ? `<button id="cookie-panel-banner-accept-button">${config.acceptLabel}</button><button id="cookie-panel-banner-settings-button">${config.settingsLabel}</button>`
-        : `<button id="cookie-panel-banner-settings-button">${config.settingsLabel}</button><button id="cookie-panel-banner-accept-button">${config.acceptLabel}</button>`}
+    ? `<button id="cookie-panel-banner-accept-button">${config.acceptLabel}</button><button id="cookie-panel-banner-settings-button">${config.settingsLabel}</button>`
+    : `<button id="cookie-panel-banner-settings-button">${config.settingsLabel}</button><button id="cookie-panel-banner-accept-button">${config.acceptLabel}</button>`}
       </div>
     </div>
     </div>`;
@@ -169,8 +169,8 @@
           <div class="cookie-panel-settings__categories">${renderCategories(config.categories)}</div>
           <div class="cookie-panel-settings__buttons">
           ${config.buttonOrder === "accept-left"
-        ? `<button id="cookie-panel-settings-save-button">${config.saveLabel}</button><a href="${config.readMoreLink}">${config.readMoreLabel}</a>`
-        : `<a href="${config.readMoreLink}">${config.readMoreLabel}</a><button id="cookie-panel-settings-save-button">${config.saveLabel}</button>`}
+    ? `<button id="cookie-panel-settings-save-button">${config.saveLabel}</button><a href="${config.readMoreLink}">${config.readMoreLabel}</a>`
+    : `<a href="${config.readMoreLink}">${config.readMoreLabel}</a><button id="cookie-panel-settings-save-button">${config.saveLabel}</button>`}
           </div>
         </div>
       </div>`;
@@ -224,6 +224,7 @@
 
     // TODO Focus
   };
+  window.showCookiePanelSettings = showCookiePanelSettings;
 
 
   const runSetup = () => {
