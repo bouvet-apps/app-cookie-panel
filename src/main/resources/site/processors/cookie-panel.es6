@@ -62,6 +62,7 @@ exports.responseProcessor = (req, res) => {
     description: siteConfig["cookie-panel-text-description"],
     settingsLabel: siteConfig["cookie-panel-settings-button-label"],
     acceptLabel: siteConfig["cookie-panel-accept-button-label"],
+    rejectLabel: siteConfig["cookie-panel-reject-button-label"],
     saveLabel: siteConfig["cookie-panel-save-button-label"],
     readMoreLabel: siteConfig["cookie-panel-read-more-link-label"],
     readMoreLink: libs.portal.pageUrl({ id: siteConfig["cookie-panel-read-more-link"] }),
