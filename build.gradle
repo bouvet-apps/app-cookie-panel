@@ -69,8 +69,6 @@ repositories {
     maven { url 'https://jitpack.io' }
 }
 
-version = "${jarVersion}"
-
 node {
     version = '12.16.0'
     npmVersion = '6.13.4'
