@@ -12,10 +12,6 @@ app {
     systemVersion = xpVersion
 }
 
-ext {
-    deployDir = "/Users/daniel.holmen/Prosjekter/forsvaret/develop/forsv-app/deploy"
-}
-
 group = 'com.github.bouvet-apps'
 
 compileJava.options.encoding = "UTF-8"
@@ -46,7 +42,7 @@ task deployApp {
     doLast {
         copy {
             from "build/libs/${projectName}-${version}.jar"
-            into "${deployDir}"
+            into "dist"
             rename ("${projectName}-${version}.jar", "${projectName}.jar")
         }
     }
