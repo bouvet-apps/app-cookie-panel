@@ -60,8 +60,7 @@
       if (/[?&]cookie_settings=/.test(document.location.search)) {
         document.location.href = removeParameter(document.location.href, "cookie_settings");
       } else {
-        // eslint-disable-next-line
-        document.location.reload(true);
+        document.location.reload();
       }
     }
   };
@@ -101,8 +100,8 @@
       ${config.description ? `<p class="cookie-panel-banner__description">${config.description}</p>` : ""}
       <div class="cookie-panel-banner__buttons">
         ${config.buttonOrder === "accept-left"
-    ? `<button id="cookie-panel-banner-accept-button">${config.acceptLabel}</button><button id="cookie-panel-banner-settings-button">${config.settingsLabel}</button>`
-    : `<button id="cookie-panel-banner-settings-button">${config.settingsLabel}</button><button id="cookie-panel-banner-accept-button">${config.acceptLabel}</button>`}
+        ? `<button id="cookie-panel-banner-accept-button">${config.acceptLabel}</button><button id="cookie-panel-banner-settings-button">${config.settingsLabel}</button>`
+        : `<button id="cookie-panel-banner-settings-button">${config.settingsLabel}</button><button id="cookie-panel-banner-accept-button">${config.acceptLabel}</button>`}
       </div>
     </div>
     </div>`;
@@ -157,17 +156,20 @@
           <div class="cookie-panel-settings__categories">${renderCategories(config.categories)}</div>
           <div class="cookie-panel-settings__buttons">
           ${config.buttonOrder === "accept-left"
-    ? `<button id="cookie-panel-settings-save-button">${config.saveLabel}</button><a href="${config.readMoreLink}">${config.readMoreLabel}</a>`
-    : `<a href="${config.readMoreLink}">${config.readMoreLabel}</a><button id="cookie-panel-settings-save-button">${config.saveLabel}</button>`}
+        ? `<button id="cookie-panel-settings-save-button">${config.saveLabel}</button><a href="${config.readMoreLink}">${config.readMoreLabel}</a>`
+        : `<a href="${config.readMoreLink}">${config.readMoreLabel}</a><button id="cookie-panel-settings-save-button">${config.saveLabel}</button>`}
           </div>
         </div>
       </div>`;
 
     const settingsPanel = document.createElement("div");
     settingsPanel.innerHTML = html;
-    const banner = document.getElementById("cookie-panel-banner__wrapper");
-    // document.body.prepend(settingsPanel);
-    banner.insertAdjacentElement("afterend", settingsPanel);
+    if (bannerContainer) {
+      const banner = document.getElementById("cookie-panel-banner__wrapper");
+      banner.insertAdjacentElement("afterend", settingsPanel);
+    } else {
+      document.body.prepend(settingsPanel);
+    }
 
     // Loop through category cookies and sync switches
     forceArray(config.categories).forEach((category) => {
