@@ -117,18 +117,21 @@
 
   // ---
   const renderBanner = () => {
+    const acceptButton = `<button id="cookie-panel-banner-accept-button">${config.acceptLabel}</button>`;
+    const settingsButton = `<button id="cookie-panel-banner-settings-button">${config.settingsLabel}</button>`;
+    // Reject button is optional
+    const rejectButton = config.rejectLabel
+      ? `<button id="cookie-panel-banner-reject-button">${config.rejectLabel}</button>`
+      : "";
+
     const html = `<div class="cookie-panel-banner ${config.theme}" id="cookie-panel-banner">
     <div class="cookie-panel-banner__inner">
       ${config.title ? `<h2 class="cookie-panel-banner__title">${config.title}</h2>` : ""}
       ${config.description ? `<p class="cookie-panel-banner__description">${config.description}</p>` : ""}
       <div class="cookie-panel-banner__buttons">
         ${config.buttonOrder === "accept-left"
-        ? `<button id="cookie-panel-banner-accept-button">${config.acceptLabel}</button>
-          <button id="cookie-panel-banner-reject-button">${config.rejectLabel}</button>
-          <button id="cookie-panel-banner-settings-button">${config.settingsLabel}</button>`
-        : `<button id="cookie-panel-banner-settings-button">${config.settingsLabel}</button>
-          <button id="cookie-panel-banner-accept-button">${config.acceptLabel}</button>
-          <button id="cookie-panel-banner-reject-button">${config.rejectLabel}</button>`}
+        ? acceptButton + rejectButton + settingsButton
+        : settingsButton + acceptButton + rejectButton}
       </div>
     </div>
     </div>`;
@@ -149,10 +152,12 @@
       showCookiePanelSettings();
     });
 
-    document.getElementById("cookie-panel-banner-reject-button").addEventListener("click", () => {
-      document.getElementById("cookie-panel-banner").style.display = "none";
-      rejectAllCookies();
-    });
+    if (document.getElementById("cookie-panel-banner-reject-button")) {
+      document.getElementById("cookie-panel-banner-reject-button").addEventListener("click", () => {
+        document.getElementById("cookie-panel-banner").style.display = "none";
+        rejectAllCookies();
+      });
+    }
 
     return banner;
   };
