@@ -22,7 +22,6 @@ module.exports = {
   plugins: [
     new MiniCssExtractPlugin({
       filename: "css/[name].css",
-      allChunks: true
     }),
     new StylelintPlugin({
       context: "./styles/"
@@ -37,12 +36,28 @@ module.exports = {
       },
       {
         test: /\.(scss|css)$/,
-        use: [MiniCssExtractPlugin.loader, "css-loader", "resolve-url-loader", "postcss-loader", "sass-loader?sourceMap"]
+        use: [
+          {
+            loader: MiniCssExtractPlugin.loader
+          }, {
+            loader: "css-loader"
+          }, {
+            loader: "postcss-loader"
+          }, {
+            loader: "resolve-url-loader"
+          }, {
+            loader: "sass-loader",
+            options: {
+              sourceMap: true,
+              implementation: require("sass")
+            }
+          }
+        ]
       }
     ]
   },
   resolve: {
-    extensions: [".es6", ".js"]
+    extensions: ["*", ".js", ".jsx", "json", "scss", "sass"]
   },
   output: {
     filename: "js/[name].js",

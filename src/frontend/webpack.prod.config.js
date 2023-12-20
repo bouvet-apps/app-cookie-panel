@@ -1,16 +1,15 @@
-/* eslint-disable import/no-extraneous-dependencies */
-const merge = require("webpack-merge");
-const UglifyJsPlugin = require("uglifyjs-webpack-plugin");
+const { merge } = require("webpack-merge");
 const CssMinimizerPlugin = require("css-minimizer-webpack-plugin");
 const common = require("./webpack.common.config");
+const MiniCssExtractPlugin = require("mini-css-extract-plugin");
 
 module.exports = merge(common, {
   mode: "production",
   optimization: {
+    minimize: true,
     minimizer: [
       "...",
-      new UglifyJsPlugin(),
       new CssMinimizerPlugin()
     ]
-  }
+  },
 });
