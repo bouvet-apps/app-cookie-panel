@@ -212,7 +212,6 @@
 
     banner.innerHTML = html;
 
-    // document.body.prepend(banner);
     document.body.insertAdjacentElement("afterbegin", banner);
 
     document.getElementById("cookie-panel-banner-accept-button").addEventListener("click", () => {
