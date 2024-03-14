@@ -115,48 +115,6 @@
     reloadOnSave();
   };
 
-  // ---
-  const renderBanner = () => {
-    const html = `<div class="cookie-panel-banner ${config.theme}" id="cookie-panel-banner">
-    <div class="cookie-panel-banner__inner">
-      ${config.title ? `<h2 class="cookie-panel-banner__title">${config.title}</h2>` : ""}
-      ${config.description ? `<p class="cookie-panel-banner__description">${config.description}</p>` : ""}
-      <div class="cookie-panel-banner__buttons">
-        ${config.buttonOrder === "accept-left"
-        ? `<button id="cookie-panel-banner-accept-button">${config.acceptLabel}</button>
-          <button id="cookie-panel-banner-reject-button">${config.rejectLabel}</button>
-          <button id="cookie-panel-banner-settings-button">${config.settingsLabel}</button>`
-        : `<button id="cookie-panel-banner-settings-button">${config.settingsLabel}</button>
-          <button id="cookie-panel-banner-accept-button">${config.acceptLabel}</button>
-          <button id="cookie-panel-banner-reject-button">${config.rejectLabel}</button>`}
-      </div>
-    </div>
-    </div>`;
-    const banner = document.createElement("div");
-    banner.setAttribute("id", "cookie-panel-banner__wrapper");
-
-    banner.innerHTML = html;
-
-    // document.body.prepend(banner);
-    document.body.insertAdjacentElement("afterbegin", banner);
-
-    document.getElementById("cookie-panel-banner-accept-button").addEventListener("click", () => {
-      document.getElementById("cookie-panel-banner").style.display = "none";
-      acceptAllCookies();
-    });
-
-    document.getElementById("cookie-panel-banner-settings-button").addEventListener("click", () => {
-      showCookiePanelSettings();
-    });
-
-    document.getElementById("cookie-panel-banner-reject-button").addEventListener("click", () => {
-      document.getElementById("cookie-panel-banner").style.display = "none";
-      rejectAllCookies();
-    });
-
-    return banner;
-  };
-
   const renderCategory = category => `
       <div class="cookie-panel-settings__categories__category">
         <div class="cookie-panel-settings__categories__category-header">
@@ -188,8 +146,8 @@
           <div class="cookie-panel-settings__categories">${renderCategories(config.categories)}</div>
           <div class="cookie-panel-settings__buttons">
           ${config.buttonOrder === "accept-left"
-        ? `<button id="cookie-panel-settings-save-button">${config.saveLabel}</button><a href="${config.readMoreLink}">${config.readMoreLabel}</a>`
-        : `<a href="${config.readMoreLink}">${config.readMoreLabel}</a><button id="cookie-panel-settings-save-button">${config.saveLabel}</button>`}
+    ? `<button id="cookie-panel-settings-save-button">${config.saveLabel}</button><a href="${config.readMoreLink}">${config.readMoreLabel}</a>`
+    : `<a href="${config.readMoreLink}">${config.readMoreLabel}</a><button id="cookie-panel-settings-save-button">${config.saveLabel}</button>`}
           </div>
         </div>
       </div>`;
@@ -221,6 +179,58 @@
     return settingsPanel;
   };
 
+  const showCookiePanelSettings = () => {
+    if (!settingsContainer) {
+      settingsContainer = renderSettingsPanel();
+    }
+    if (bannerContainer) bannerContainer.style.display = "none";
+    settingsContainer.style.display = "block";
+
+    // TODO Focus
+  };
+  window.showCookiePanelSettings = showCookiePanelSettings;
+
+  // ---
+  const renderBanner = () => {
+    const html = `<div class="cookie-panel-banner ${config.theme}" id="cookie-panel-banner">
+    <div class="cookie-panel-banner__inner">
+      ${config.title ? `<h2 class="cookie-panel-banner__title">${config.title}</h2>` : ""}
+      ${config.description ? `<p class="cookie-panel-banner__description">${config.description}</p>` : ""}
+      <div class="cookie-panel-banner__buttons">
+        ${config.buttonOrder === "accept-left"
+    ? `<button id="cookie-panel-banner-accept-button">${config.acceptLabel}</button>
+          <button id="cookie-panel-banner-reject-button">${config.rejectLabel}</button>
+          <button id="cookie-panel-banner-settings-button">${config.settingsLabel}</button>`
+    : `<button id="cookie-panel-banner-settings-button">${config.settingsLabel}</button>
+          <button id="cookie-panel-banner-accept-button">${config.acceptLabel}</button>
+          <button id="cookie-panel-banner-reject-button">${config.rejectLabel}</button>`}
+      </div>
+    </div>
+    </div>`;
+    const banner = document.createElement("div");
+    banner.setAttribute("id", "cookie-panel-banner__wrapper");
+
+    banner.innerHTML = html;
+
+    document.body.insertAdjacentElement("afterbegin", banner);
+
+    document.getElementById("cookie-panel-banner-accept-button").addEventListener("click", () => {
+      document.getElementById("cookie-panel-banner").style.display = "none";
+      acceptAllCookies();
+    });
+
+    document.getElementById("cookie-panel-banner-settings-button").addEventListener("click", () => {
+      showCookiePanelSettings();
+    });
+
+    document.getElementById("cookie-panel-banner-reject-button").addEventListener("click", () => {
+      document.getElementById("cookie-panel-banner").style.display = "none";
+      rejectAllCookies();
+    });
+
+    return banner;
+  };
+
   const getData = (selector) => {
     let data = {};
     try {
@@ -233,17 +243,6 @@
     }
     return data;
   };
-
-  const showCookiePanelSettings = () => {
-    if (!settingsContainer) {
-      settingsContainer = renderSettingsPanel();
-    }
-    if (bannerContainer) bannerContainer.style.display = "none";
-    settingsContainer.style.display = "block";
-
-    // TODO Focus
-  };
-  window.showCookiePanelSettings = showCookiePanelSettings;
 
   const runSetup = () => {
     config = getData("config");
