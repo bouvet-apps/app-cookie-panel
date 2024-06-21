@@ -4,30 +4,6 @@ const libs = {
   util: require("/lib/util")
 };
 
-const HEADER_NAME = "X-Cookiepanel";
-const HEADER_VALUE_INCLUDE = "include";
-
-/**
- * Set up cookies with rejected values
- * @param categories Cookie categories
- * @param res Response object
- */
-const getRejectedCookies = (categories, res) => {
-  const cookies = res.cookies || {};
-  libs.util.forceArray(categories).forEach((category) => {
-    libs.util.forceArray(category.cookies).forEach((cookie) => {
-      cookies[cookie["cookie-name"]] = {
-        value: cookie["cookie-value-rejected"],
-        path: "/",
-        secure: false,
-        httpOnly: false,
-        maxAge: 31556926
-      };
-    });
-  });
-  return cookies;
-};
-
 /**
  * Render JSON page contribution
  * @param model Model to render
@@ -41,12 +17,6 @@ exports.responseProcessor = (req, res) => {
     return res;
   }
 
-  if (req.cookies[controlCookieName] === "true"
-    && !req.params.cookie_settings
-    && !(res.headers[HEADER_NAME] === HEADER_VALUE_INCLUDE || res.headers[HEADER_NAME.toLowerCase()] === HEADER_VALUE_INCLUDE)) {
-    return res;
-  }
-
   const siteConfig = libs.portal.getSiteConfig();
   const categories = libs.util.getCookieCategories(siteConfig);
 
@@ -54,8 +24,6 @@ exports.responseProcessor = (req, res) => {
     controlCookie: controlCookieName,
     url: libs.portal.serviceUrl({ service: "cookie-info" }),
     showSettings: req.params.cookie_settings === "true",
-    // passive: res.headers[HEADER_NAME] === HEADER_VALUE_INCLUDE,
-    accepted: req.cookies[controlCookieName] === "true",
     theme: siteConfig["cookie-panel-theme"] === "none" ? "" : `theme ${siteConfig["cookie-panel-theme"]}`,
     buttonOrder: siteConfig["cookie-panel-button-order"],
     title: siteConfig["cookie-panel-text-title"],
@@ -82,14 +50,5 @@ exports.responseProcessor = (req, res) => {
   const html = render(model);
   res.pageContributions.bodyEnd.push(html);
 
-  // If no control cookie is set, reject all cookies by default to achieve opt-in functionality
-  if (!req.cookies[controlCookieName]) {
-    res.cookies = getRejectedCookies(siteConfig["cookie-panel-categories"], res);
-  }
-
-  // if (!res.headers) res.headers = {};
-  // res.headers["Set-Cookie"] = "test=hei; Path=/; Max-Age=31556926";
-
-  // log.info(JSON.stringify(res, null, 4));
   return res;
 };
