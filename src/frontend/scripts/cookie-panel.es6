@@ -36,25 +36,6 @@
     document.cookie = `${name}=${value || ""}; Expires=${date.toUTCString()}; Max-Age=${365 * 24 * 60 * 60}; Path=/`;
   };
 
-  // -- Temporary fix for broken cookie handling in XP
-  const deleteCookie = (name) => {
-    const pathname = window.location.pathname;
-    const path = pathname.substring(0, pathname.lastIndexOf("/"));
-    const cookie = `${name}=""; Expires=${new Date(0).toUTCString()}; Path=${path}`;
-    document.cookie = cookie;
-  };
-
-  const resetCookiePaths = () => {
-    forceArray(config.categories).forEach((category) => {
-      forceArray(category.cookies).forEach((cookie) => {
-        const value = getCookieValue(cookie["cookie-name"]);
-        deleteCookie(cookie["cookie-name"]);
-        setCookie(cookie["cookie-name"], value);
-      });
-    });
-  };
-  // -- END OF Temporary fix for broken cookie handling in XP
-
   const reloadOnSave = (forceReload) => {
     if (config.page.reloadOnSave || forceReload) {
       if (/[?&]cookie_settings=/.test(document.location.search)) {
@@ -192,6 +173,9 @@
 
   // ---
   const renderBanner = () => {
+    // Only show the reject all button if the label has been set
+    const rejectLabelHtml = config.rejectLabel ? `<button id="cookie-panel-banner-reject-button">${config.rejectLabel}</button>` : "";
+
     const html = `<div class="cookie-panel-banner ${config.theme}" id="cookie-panel-banner">
     <div class="cookie-panel-banner__inner">
       ${config.title ? `<h2 class="cookie-panel-banner__title">${config.title}</h2>` : ""}
@@ -199,11 +183,11 @@
       <div class="cookie-panel-banner__buttons">
         ${config.buttonOrder === "accept-left"
     ? `<button id="cookie-panel-banner-accept-button">${config.acceptLabel}</button>
-          <button id="cookie-panel-banner-reject-button">${config.rejectLabel}</button>
+          ${rejectLabelHtml}
           <button id="cookie-panel-banner-settings-button">${config.settingsLabel}</button>`
     : `<button id="cookie-panel-banner-settings-button">${config.settingsLabel}</button>
           <button id="cookie-panel-banner-accept-button">${config.acceptLabel}</button>
-          <button id="cookie-panel-banner-reject-button">${config.rejectLabel}</button>`}
+          ${rejectLabelHtml}`}
       </div>
     </div>
     </div>`;
@@ -223,10 +207,12 @@
       showCookiePanelSettings();
     });
 
-    document.getElementById("cookie-panel-banner-reject-button").addEventListener("click", () => {
-      document.getElementById("cookie-panel-banner").style.display = "none";
-      rejectAllCookies();
-    });
+    if (config.rejectLabel) {
+      document.getElementById("cookie-panel-banner-reject-button").addEventListener("click", () => {
+        document.getElementById("cookie-panel-banner").style.display = "none";
+        rejectAllCookies();
+      });
+    }
 
     return banner;
   };
@@ -248,8 +234,7 @@
     config = getData("config");
     config.page = getData("page-config");
 
-    if (!config.accepted) {
-      resetCookiePaths(); // -- Temporary fix for broken cookie handling in XP
+    if (getCookieValue(config.controlCookie) !== "true") {
       bannerContainer = renderBanner();
     }
 

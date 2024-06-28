@@ -20,19 +20,6 @@ other apps that they now can render their content.
 ## Customizing
 You can add CSS styling in your own applications to make the panels fit any design you want.
 
-## Controlling
-You can control various aspects of Cookie Panel in the frontend.
-These are dependent on the panel code being included in the render. There is only 3 ways to include the code for the panel in the render:
-- `no.bouvet.app.cookiepanel-cookie-control` cookie is not set to `true`(means the user has not made a choice in the panel)
-- Add `cookie_settings=true` as param to URL
-- The header `X-Cookiepanel` with value `include` is added to the response object by your app code.
-```
-return {
-  body,
-  headers: { "x-cookiepanel": "include" }
-};
-```
-
 ### Open settings panel from a link or button
 There are 2 ways to add buttons that directly open the cookie settings panel.
 
