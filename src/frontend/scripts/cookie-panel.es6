@@ -56,7 +56,7 @@
     forceArray(config.categories).forEach((category) => {
       forceArray(category.cookies).forEach((cookie) => {
         if (getCookieValue(cookie["cookie-name"]) === cookie["cookie-value-accepted"]) {
-          runOnCookieConsent(cookie["cookie-name"], cookie["cookie-value-accepted"]);
+          runOnCookieConsent(cookie["cookie-name"]);
         }
       });
     });
