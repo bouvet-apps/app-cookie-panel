@@ -61,7 +61,6 @@
       });
     });
   };
-  document.addEventListener('DOMContentLoaded', handleConsentedCookies);
 
   const saveCookieSettings = () => {
     let didDisable = false;
@@ -255,6 +254,8 @@
     });
 
     if (config.showSettings) showCookiePanelSettings();
+
+    handleConsentedCookies();
   };
 
   if (document.readyState !== "loading") {
