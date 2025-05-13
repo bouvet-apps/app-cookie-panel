@@ -32,8 +32,8 @@
 
   const setCookie = (name, value) => {
     const date = new Date();
-    date.setTime(date.getTime() + (365 * 24 * 60 * 60 * 1000));
-    document.cookie = `${name}=${value || ""}; Expires=${date.toUTCString()}; Max-Age=${365 * 24 * 60 * 60}; Path=/`;
+    date.setTime(date.getTime() + ((config.expireControlCookieAfterDays || 365) * 24 * 60 * 60 * 1000));
+    document.cookie = `${name}=${value || ""}; Expires=${date.toUTCString()}; Max-Age=${(config.expireControlCookieAfterDays || 365) * 24 * 60 * 60}; Path=/`;
   };
 
   const reloadOnSave = (forceReload) => {
@@ -233,6 +233,10 @@
   const runSetup = () => {
     config = getData("config");
     config.page = getData("page-config");
+
+    if (config?.controlCookieInvalidateNumber !== undefined && config?.controlCookieInvalidateNumber !== 0) {
+      config.controlCookie = `${config.controlCookie}${config.controlCookieInvalidateNumber}`;
+    }
 
     if (getCookieValue(config.controlCookie) !== "true") {
       bannerContainer = renderBanner();

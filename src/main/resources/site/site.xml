@@ -108,6 +108,20 @@
         </field-set>
       </items>
     </field-set>
+    <field-set>
+      <label>Cookie panel cookie expiration</label>
+      <items>
+          <input name="control-cookie-expire-after-days" type="Long">
+              <label>How many days should pass before the user will get the Cookie Panel displayed again</label>
+              <default>365</default>
+          </input>
+          <input name="control-cookie-invalidate-number" type="Long">
+              <label>Number of times the Cookie Panel is forced displayed for the all users</label>
+              <help-text>This number is used to add a new control cookie, so it is possible to force display of the Cookie Panel to the user. Ex. if a category is edited or added.</help-text>
+              <default>0</default>
+          </input>
+      </items>
+    </field-set>
   </form>
   <processors>
     <response-processor name="cookie-panel" order="5"/>
