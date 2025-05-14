@@ -34,7 +34,9 @@ exports.responseProcessor = (req, res) => {
     saveLabel: siteConfig["cookie-panel-save-button-label"],
     readMoreLabel: siteConfig["cookie-panel-read-more-link-label"],
     readMoreLink: libs.portal.pageUrl({ id: siteConfig["cookie-panel-read-more-link"] }),
-    categories: categories
+    categories: categories,
+    expireControlCookieAfterDays: siteConfig["control-cookie-expire-after-days"],
+    controlCookieInvalidateNumber: siteConfig["control-cookie-invalidate-number"]
   };
 
   res.pageContributions.headEnd = libs.util.forceArray(res.pageContributions.headEnd);
