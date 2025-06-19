@@ -203,6 +203,7 @@
     </div>`;
     const banner = document.createElement("div");
     banner.setAttribute("id", "cookie-panel-banner__wrapper");
+    banner.setAttribute("data-nosnippet", "");
 
     banner.innerHTML = html;
 
