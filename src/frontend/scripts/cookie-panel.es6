@@ -36,6 +36,41 @@
     document.cookie = `${name}=${value || ""}; Expires=${date.toUTCString()}; Max-Age=${(config.expireControlCookieAfterDays || 365) * 24 * 60 * 60}; Path=/`;
   };
 
+  const getCookieDomain = () => {
+    const hostname = location.hostname.replace(/^www\./i, "");
+    const parts = hostname.split('.');
+    if (parts.length > 2) {
+      return `.${parts.slice(-2).join('.')}`;
+    }
+    return `${hostname}`;
+  };
+
+  const deleteCookie = (cookieName, path = "/") => {
+    const domain = getCookieDomain();
+    document.cookie = `${cookieName}=; Max-Age=0; path=${path}; domain=${domain}`;
+  };
+
+  const deleteOptionalCookies = () => {
+    const requiredCookies = forceArray(config.categories)
+      .flatMap(category => forceArray(category.requiredCookies));
+
+    const controlCookies = forceArray(config.categories)
+      .flatMap(category => forceArray(category.cookies)
+      .map(cookie => cookie["cookie-name"]));
+
+    document.cookie.split('; ').forEach(cookie => {
+      const cookieName = cookie.split('=')[0];
+
+      const isRequired = requiredCookies.includes(cookieName);
+      const isControl = controlCookies.includes(cookieName);
+      const isConfigControl = cookieName === config.controlCookie;
+
+      if (!isRequired && !isControl && !isConfigControl) {
+        deleteCookie(cookieName);
+      }
+    });
+  };
+
   const reloadOnSave = (forceReload) => {
     if (config.page.reloadOnSave || forceReload) {
       if (/[?&]cookie_settings=/.test(document.location.search)) {
@@ -79,6 +114,7 @@
     setCookie(config.controlCookie, "true");
 
     // if (config.page.reloadOnSave) document.location.href = removeParameter(document.location.href, "cookie_settings");
+    if (didDisable) deleteOptionalCookies();
     reloadOnSave(didDisable);
   };
 
@@ -104,6 +140,7 @@
     setCookie(config.controlCookie, "true");
 
     reloadOnSave();
+    deleteOptionalCookies();
   };
 
   const renderCategory = category => `

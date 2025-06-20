@@ -19,7 +19,8 @@ const getCookieCategories = siteConfig => [{
   title: siteConfig["cookie-panel-required-title"],
   description: siteConfig["cookie-panel-required-description"],
   cookies: [],
-  default: true
+  default: true,
+  requiredCookies: siteConfig["cookie-panel-required-cookies"]
 },
 ...forceArray(siteConfig["cookie-panel-categories"])
 ].map((category) => {
