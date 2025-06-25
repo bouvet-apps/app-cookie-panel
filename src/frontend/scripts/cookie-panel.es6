@@ -110,10 +110,10 @@
       <div class="cookie-panel-settings__categories__category">
         <div class="cookie-panel-settings__categories__category-header">
           <label class="cookie-panel-switch">
-            <input ${(category.default ? "checked disabled" : "")} type="checkbox" id="${category.id}">
+            <input ${(category.default ? "checked disabled" : "")} type="checkbox" id="${category.id}" aria-labelledby="${category.id}-title">
             <span class="cookie-panel-switch__toggle"></span>
           </label>
-          <h3>${category.title || ""}</h3>
+          <h3 id="${category.id}-title">${category.title || ""}</h3>
         </div>
         <p>${category.description || ""}</p>
         <hr/>
