@@ -36,18 +36,22 @@
     document.cookie = `${name}=${value || ""}; Expires=${date.toUTCString()}; Max-Age=${(config.expireControlCookieAfterDays || 365) * 24 * 60 * 60}; Path=/`;
   };
 
-  const getCookieDomain = () => {
-    const hostname = location.hostname.replace(/^www\./i, "");
-    const parts = hostname.split('.');
+  const getTopLevelDomain = () => {
+    const parts = location.hostname.split('.');
     if (parts.length > 2) {
       return `.${parts.slice(-2).join('.')}`;
     }
-    return `${hostname}`;
+    return location.hostname;
   };
 
   const deleteCookie = (cookieName, path = "/") => {
-    const domain = getCookieDomain();
-    document.cookie = `${cookieName}=; Max-Age=0; path=${path}; domain=${domain}`;
+    const topLevelDomain = getTopLevelDomain();
+    const hostname = location.hostname;
+
+    // Try deleting cookie on different domains
+    document.cookie = `${cookieName}=; Max-Age=0; path=${path}; domain=${topLevelDomain}`;
+    document.cookie = `${cookieName}=; Max-Age=0; path=${path}; domain=${hostname}`;
+    document.cookie = `${cookieName}=; Max-Age=0; path=${path}`;
   };
 
   const deleteOptionalCookies = () => {
@@ -139,8 +143,8 @@
     });
     setCookie(config.controlCookie, "true");
 
-    reloadOnSave();
     deleteOptionalCookies();
+    reloadOnSave();
   };
 
   const renderCategory = category => `
