@@ -49,7 +49,8 @@ a reload to properly render, this behaviour will only affect pages using those p
 ```
 
 ### Run code on consent
-As an alternative to having to refresh the page after consent is given, your app can add a function to be run when consent is given. When consent is given to a category, the app will run a function for each cookie in that categroy, if there is any.
+Your app can add a function to run both on page load and when user consent is given. When consent is granted for a specific category, the app will
+execute a function for each cookie within that category—if any exist. On page load, the function will run for every cookie across all categories.
 
 Register a function on the `window.__RUN_ON_COOKIE_CONSENT__` object, the key being the same as the cookie name in the cookie panel app config.
 
