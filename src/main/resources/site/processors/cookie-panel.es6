@@ -17,7 +17,7 @@ exports.responseProcessor = (req, res) => {
     return res;
   }
 
-  const siteConfig = libs.portal.getSiteConfig();
+  const siteConfig = libs.util.getRootSiteConfig();
   const categories = libs.util.getCookieCategories(siteConfig);
 
   const model = {
