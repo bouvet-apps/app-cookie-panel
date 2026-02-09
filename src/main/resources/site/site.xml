@@ -71,11 +71,11 @@
           <items>
             <input name="cookie-panel-required-title" type="TextLine">
               <label>Title</label>
-              <occurrences minimum="1" maximum="1" />
+              <occurrences minimum="0" maximum="1" />
             </input>
             <input name="cookie-panel-required-description" type="TextLine">
               <label>Description</label>
-              <occurrences minimum="1" maximum="1" />
+              <occurrences minimum="0" maximum="1" />
             </input>
           </items>
         </field-set>
