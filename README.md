@@ -67,7 +67,8 @@ window.__RUN_ON_COOKIE_CONSENT__["com-enonic-app-ga_disabled"] = function () {
 
 ```
 
-A combonation of checking value of cookie on server and using `__RUN_ON_COOKIE_CONSENT__`should be used to optimize your app.
+It's important the RUN_ON_COOKIE_CONSENT function is set on the window object before the cookie panel app tries to execute it. The cookie panel front-end script that executes it is added to the body end,
+is deferred and runs on DOMContentLoaded, so your script needs to be loaded and executed before that.
 
 ## Integrating
 Cookie Panel works out of the box with these apps:
