@@ -28,3 +28,7 @@ node_modules
 build
 
 .idea/
+
+# Enonic XP
+/.enonic
+/bin/

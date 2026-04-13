@@ -4,7 +4,6 @@
   let settingsContainer;
 
   const forceArray = (data) => {
-    // eslint-disable-next-line no-restricted-globals
     if (data === undefined || data === null || (typeof data === "number" && isNaN(data))) return [];
     return Array.isArray(data) ? data : [data];
   };
@@ -236,7 +235,7 @@
       );
       data = JSON.parse(json.textContent);
     } catch (err) {
-      // Ignore errors here
+      log.info("Error in cookie-panel.es6: %s", JSON.stringify(err, null, 4));
     }
     return data;
   };
