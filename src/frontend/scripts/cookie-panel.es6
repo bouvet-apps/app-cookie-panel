@@ -235,7 +235,7 @@
       );
       data = JSON.parse(json.textContent);
     } catch (err) {
-      log.info("Error in cookie-panel.es6: %s", JSON.stringify(err, null, 4));
+      console.log("Error in cookie-panel.es6: ", err);
     }
     return data;
   };
