@@ -233,7 +233,9 @@
       const json = document.querySelector(
         `script[type="application/json"][data-cookie-panel-selector="${selector}"]`
       );
-      data = JSON.parse(json.textContent);
+      if (json) {
+        data = JSON.parse(json.textContent);
+      }
     } catch (err) {
       console.log("Error in cookie-panel.es6: ", err);
     }
