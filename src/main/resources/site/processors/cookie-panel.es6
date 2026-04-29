@@ -53,5 +53,11 @@ exports.responseProcessor = (req, res) => {
   const html = render(model);
   res.pageContributions.bodyEnd.push(html);
 
+  const pageConfigModel = {
+    reloadOnSave: siteConfig["cookie-panel-reload-on-save"] === true || siteConfig["cookie-panel-reload-on-save"] === "true"
+  };
+  const pageConfigHtml = `<script type="application/json" data-cookie-panel-selector="page-config">${JSON.stringify(pageConfigModel)}</script>`;
+  res.pageContributions.bodyEnd.push(pageConfigHtml);
+
   return res;
 };
