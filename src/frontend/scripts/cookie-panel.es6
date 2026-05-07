@@ -30,11 +30,30 @@
     return b ? b.pop() : "";
   };
 
-  const setCookie = (name, value) => {
+  const setCookie = (name, value, options = {}) => {
     const date = new Date();
     const days = config.expireControlCookieAfterDays || 365;
     date.setTime(date.getTime() + (days * 24 * 60 * 60 * 1000));
-    document.cookie = `${name}=${value || ""}; Expires=${date.toUTCString()}; Max-Age=${days * 24 * 60 * 60}; Path=/`;
+
+    let cookieString = `${name}=${value || ""}; Expires=${date.toUTCString()}; Max-Age=${days * 24 * 60 * 60}; Path=/`;
+
+    // Add Secure attribute if specified
+    if (options.secure === true) {
+      cookieString += "; Secure";
+    }
+
+    // Add SameSite attribute if specified
+    if (options.sameSite && options.sameSite !== "unset") {
+      // SameSite=None requires Secure, so enforce it
+      if (options.sameSite.toLowerCase() === "none" && !options.secure) {
+        cookieString += "; Secure";
+        // eslint-disable-next-line no-console
+        console.warn(`Cookie "${name}" has SameSite=None but Secure not set. Forcing Secure=true per browser requirement.`);
+      }
+      cookieString += `; SameSite=${options.sameSite.charAt(0).toUpperCase()}${options.sameSite.slice(1).toLowerCase()}`;
+    }
+
+    document.cookie = cookieString;
   };
 
   const reloadOnSave = (forceReload) => {
@@ -65,6 +84,16 @@
     });
   };
 
+  const getCookieOptions = (cookie) => ({
+    secure: cookie["cookie-secure"],
+    sameSite: cookie["cookie-samesite"]
+  });
+
+  const getControlCookieOptions = () => ({
+    secure: config.controlCookieSecure,
+    sameSite: config.controlCookieSameSite
+  });
+
   const saveCookieSettings = () => {
     let didDisable = false;
     forceArray(config.categories).forEach((category) => {
@@ -75,10 +104,14 @@
         if (!enabled && previousValue && previousValue !== value) {
           didDisable = true;
         }
-        setCookie(cookie["cookie-name"], value);
+        // Apply per-cookie secure and samesite attributes
+        const cookieOptions = getCookieOptions(cookie);
+        setCookie(cookie["cookie-name"], value, cookieOptions);
       });
     });
-    setCookie(config.controlCookie, "true");
+    // Set control cookie with configured attributes
+    const controlCookieOptions = getControlCookieOptions();
+    setCookie(config.controlCookie, "true", controlCookieOptions);
 
     // Only run consent callbacks if page will NOT reload, to avoid double execution
     if (!(config.page.reloadOnSave || didDisable)) {
@@ -91,10 +124,14 @@
   const acceptAllCookies = () => {
     forceArray(config.categories).forEach((category) => {
       forceArray(category.cookies).forEach((cookie) => {
-        setCookie(cookie["cookie-name"], cookie["cookie-value-accepted"]);
+        // Apply per-cookie secure and samesite attributes
+        const cookieOptions = getCookieOptions(cookie);
+        setCookie(cookie["cookie-name"], cookie["cookie-value-accepted"], cookieOptions);
       });
     });
-    setCookie(config.controlCookie, "true");
+    // Set control cookie with configured attributes
+    const controlCookieOptions = getControlCookieOptions();
+    setCookie(config.controlCookie, "true", controlCookieOptions);
 
     // Only run consent callbacks if page will NOT reload, to avoid double execution
     if (!config.page.reloadOnSave) {
@@ -107,10 +144,14 @@
   const rejectAllCookies = () => {
     forceArray(config.categories).forEach((category) => {
       forceArray(category.cookies).forEach((cookie) => {
-        setCookie(cookie["cookie-name"], cookie["cookie-value-rejected"]);
+        // Apply per-cookie secure and samesite attributes
+        const cookieOptions = getCookieOptions(cookie);
+        setCookie(cookie["cookie-name"], cookie["cookie-value-rejected"], cookieOptions);
       });
     });
-    setCookie(config.controlCookie, "true");
+    // Set control cookie with configured attributes
+    const controlCookieOptions = getControlCookieOptions();
+    setCookie(config.controlCookie, "true", controlCookieOptions);
 
     reloadOnSave();
   };

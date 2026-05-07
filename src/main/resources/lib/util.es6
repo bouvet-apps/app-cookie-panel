@@ -16,6 +16,24 @@ exports.controlCookieName = controlCookieName;
 const getCategoryId = category => `cookie-panel-${libs.common.sanitize(category.title)}`;
 exports.getCategoryId = getCategoryId;
 
+const normalizeSameSite = (value) => {
+  const samesite = (value || "lax").toLowerCase();
+  return ["unset", "none", "lax", "strict"].indexOf(samesite) !== -1 ? samesite : "lax";
+};
+exports.normalizeSameSite = normalizeSameSite;
+
+const normalizeCookieAttributes = (cookie) => {
+  const normalized = { ...cookie };
+  
+  // Normalize secure attribute to boolean
+  normalized["cookie-secure"] = cookie["cookie-secure"] === true || cookie["cookie-secure"] === "true";
+  
+  // Normalize samesite to one of: unset, lax, strict, none
+  normalized["cookie-samesite"] = normalizeSameSite(cookie["cookie-samesite"]);
+  
+  return normalized;
+};
+
 const getCookieCategories = siteConfig => [{
   title: siteConfig["cookie-panel-required-title"],
   description: siteConfig["cookie-panel-required-description"],
@@ -26,6 +44,8 @@ const getCookieCategories = siteConfig => [{
 ].map((category) => {
   const c = category;
   c.id = getCategoryId(c);
+  // Normalize cookie attributes for each cookie in the category
+  c.cookies = forceArray(c.cookies).map(cookie => normalizeCookieAttributes(cookie));
   return c;
 });
 exports.getCookieCategories = getCookieCategories;
