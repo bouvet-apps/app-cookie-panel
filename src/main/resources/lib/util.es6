@@ -31,6 +31,11 @@ const normalizeCookieAttributes = (cookie) => {
   // Normalize samesite to one of: unset, lax, strict, none
   normalized["cookie-samesite"] = normalizeSameSite(cookie["cookie-samesite"]);
   
+  // SameSite=None requires Secure per browser spec
+  if (normalized["cookie-samesite"] === "none") {
+    normalized["cookie-secure"] = true;
+  }
+  
   return normalized;
 };
 

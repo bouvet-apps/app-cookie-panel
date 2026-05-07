@@ -44,11 +44,9 @@
 
     // Add SameSite attribute if specified
     if (options.sameSite && options.sameSite !== "unset") {
-      // SameSite=None requires Secure, so enforce it
+      // SameSite=None requires Secure — enforce silently as safety net
       if (options.sameSite.toLowerCase() === "none" && !options.secure) {
         cookieString += "; Secure";
-        // eslint-disable-next-line no-console
-        console.warn(`Cookie "${name}" has SameSite=None but Secure not set. Forcing Secure=true per browser requirement.`);
       }
       cookieString += `; SameSite=${options.sameSite.charAt(0).toUpperCase()}${options.sameSite.slice(1).toLowerCase()}`;
     }
