@@ -31,8 +31,9 @@
 
   const setCookie = (name, value) => {
     const date = new Date();
-    date.setTime(date.getTime() + ((config.expireControlCookieAfterDays || 365) * 24 * 60 * 60 * 1000));
-    document.cookie = `${name}=${value || ""}; Expires=${date.toUTCString()}; Max-Age=${(config.expireControlCookieAfterDays || 365) * 24 * 60 * 60}; Path=/`;
+    const days = config.expireControlCookieAfterDays || 365;
+    date.setTime(date.getTime() + (days * 24 * 60 * 60 * 1000));
+    document.cookie = `${name}=${value || ""}; Expires=${date.toUTCString()}; Max-Age=${days * 24 * 60 * 60}; Path=/`;
   };
 
   const reloadOnSave = (forceReload) => {
@@ -45,9 +46,11 @@
     }
   };
 
+  const consentCallbacks = window.__RUN_ON_COOKIE_CONSENT__;
+
   const runOnCookieConsent = (cookieName) => {
-    if (window.__RUN_ON_COOKIE_CONSENT__ && window.__RUN_ON_COOKIE_CONSENT__[cookieName] && typeof window.__RUN_ON_COOKIE_CONSENT__[cookieName] === "function") {
-      window.__RUN_ON_COOKIE_CONSENT__[cookieName]();
+    if (consentCallbacks && consentCallbacks[cookieName] && typeof consentCallbacks[cookieName] === "function") {
+      consentCallbacks[cookieName]();
     }
   };
 
@@ -71,26 +74,32 @@
         if (!enabled && previousValue && previousValue !== value) {
           didDisable = true;
         }
-        if (enabled) runOnCookieConsent(cookie["cookie-name"], value);
         setCookie(cookie["cookie-name"], value);
       });
     });
     setCookie(config.controlCookie, "true");
 
-    // if (config.page.reloadOnSave) document.location.href = removeParameter(document.location.href, "cookie_settings");
+    // Only run consent callbacks if page will NOT reload, to avoid double execution
+    if (!(config.page.reloadOnSave || didDisable)) {
+      handleConsentedCookies();
+    }
+
     reloadOnSave(didDisable);
   };
 
   const acceptAllCookies = () => {
     forceArray(config.categories).forEach((category) => {
       forceArray(category.cookies).forEach((cookie) => {
-        runOnCookieConsent(cookie["cookie-name"], cookie["cookie-value-accepted"]);
         setCookie(cookie["cookie-name"], cookie["cookie-value-accepted"]);
       });
     });
     setCookie(config.controlCookie, "true");
 
-    // if (config.page.reloadOnSave) document.location.href = removeParameter(document.location.href, "cookie_settings");
+    // Only run consent callbacks if page will NOT reload, to avoid double execution
+    if (!config.page.reloadOnSave) {
+      handleConsentedCookies();
+    }
+
     reloadOnSave();
   };
 
@@ -105,7 +114,7 @@
     reloadOnSave();
   };
 
-  const renderCategory = category => `
+  const renderCategory = (category) => `
       <div class="cookie-panel-settings__categories__category">
         <div class="cookie-panel-settings__categories__category-header">
           <label class="cookie-panel-switch">
@@ -246,7 +255,8 @@
     config = getData("config");
     config.page = getData("page-config");
 
-    if (config?.controlCookieInvalidateNumber !== undefined && config?.controlCookieInvalidateNumber !== 0) {
+    if (config.controlCookieInvalidateNumber !== undefined
+            && config.controlCookieInvalidateNumber !== 0) {
       config.controlCookie = `${config.controlCookie}${config.controlCookieInvalidateNumber}`;
     }
 

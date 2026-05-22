@@ -62,6 +62,19 @@
         </input>
       </items>
     </field-set>
+    <field-set>
+      <label>Behavior</label>
+      <items>
+        <input name="cookie-panel-reload-on-save" type="CheckBox">
+          <label>Reload page on cookie save</label>
+          <help-text>Reload the page when cookies are accepted or saved. Required for some integrations that need to initialize after consent.</help-text>
+          <default>unchecked</default>
+          <config>
+            <alignment>left</alignment>
+          </config>
+        </input>
+      </items>
+    </field-set>
 
     <field-set>
       <label>Categories</label>
