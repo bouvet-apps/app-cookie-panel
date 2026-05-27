@@ -122,7 +122,7 @@
             <input ${(category.default ? "checked disabled" : "")} type="checkbox" id="${category.id}" aria-labelledby="${category.id}-title">
             <span class="cookie-panel-switch__toggle"></span>
           </label>
-          <h3 id="${category.id}-title">${category.title || ""}</h3>
+          <h2 id="${category.id}-title">${category.title || ""}</h2>
         </div>
         <p>${category.description || ""}</p>
         <hr/>
