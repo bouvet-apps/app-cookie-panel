@@ -73,6 +73,31 @@
             <alignment>left</alignment>
           </config>
         </input>
+        <field-set>
+          <label>Control cookie attributes</label>
+          <help-text>Configure security attributes for the internal cookie panel control cookie.</help-text>
+          <items>
+            <input name="control-cookie-secure" type="CheckBox">
+              <label>Secure (send only over HTTPS)</label>
+              <help-text>Enable to mark the control cookie as Secure. Recommended for production HTTPS sites.</help-text>
+              <default>checked</default>
+              <config>
+                <alignment>left</alignment>
+              </config>
+            </input>
+            <input name="control-cookie-samesite" type="ComboBox">
+              <label>SameSite attribute for control cookie</label>
+              <help-text>Controls when the control cookie is sent with cross-site requests. Default is Lax for security.</help-text>
+              <occurrences minimum="1" maximum="1" />
+              <config>
+                <option value="lax">Lax (default, recommended)</option>
+                <option value="strict">Strict (most restrictive)</option>
+                <option value="none">None (requires Secure=true)</option>
+              </config>
+              <default>lax</default>
+            </input>
+          </items>
+        </field-set>
       </items>
     </field-set>
 
@@ -120,6 +145,26 @@
                     </input>
                     <input name="cookie-value-rejected" type="TextLine">
                       <label>Cookie value: Rejected</label>
+                    </input>
+                    <input name="cookie-secure" type="CheckBox">
+                      <label>Secure (send only over HTTPS)</label>
+                      <help-text>Enable to mark this cookie as Secure. The browser will only send this cookie over HTTPS connections. On HTTP, the cookie will not be set by the browser.</help-text>
+                      <default>unchecked</default>
+                      <config>
+                        <alignment>left</alignment>
+                      </config>
+                    </input>
+                    <input name="cookie-samesite" type="ComboBox">
+                      <label>SameSite attribute</label>
+                      <help-text>Controls when the cookie is sent with cross-site requests. SameSite=None requires Secure=true. Learn more: https://developer.mozilla.org/en-US/docs/Web/Security/Practical_implementation_guides/Cookies</help-text>
+                      <occurrences minimum="0" maximum="1" />
+                      <config>
+                        <option value="unset">Not set (omit attribute)</option>
+                        <option value="lax">Lax (default for modern browsers)</option>
+                        <option value="strict">Strict (most restrictive)</option>
+                        <option value="none">None (requires Secure=true)</option>
+                      </config>
+                      <default>lax</default>
                     </input>
                   </items>
                 </item-set>

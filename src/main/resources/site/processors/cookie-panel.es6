@@ -37,7 +37,9 @@ exports.responseProcessor = (req, res) => {
     readMoreLink: libs.portal.pageUrl({ id: siteConfig["cookie-panel-read-more-link"] }),
     categories: categories,
     expireControlCookieAfterDays: siteConfig["control-cookie-expire-after-days"],
-    controlCookieInvalidateNumber: siteConfig["control-cookie-invalidate-number"]
+    controlCookieInvalidateNumber: siteConfig["control-cookie-invalidate-number"],
+    controlCookieSecure: siteConfig["control-cookie-secure"] === true || siteConfig["control-cookie-secure"] === "true",
+    controlCookieSameSite: libs.util.normalizeSameSite(siteConfig["control-cookie-samesite"])
   };
 
   res.pageContributions.headEnd = libs.util.forceArray(res.pageContributions.headEnd);
