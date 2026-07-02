@@ -87,6 +87,10 @@
   width: 100%;
   bottom: 0;
 
+  h1 {
+    overflow-wrap: break-word;
+  }
+
   &.dark {
     background-color: #333;
     color: white;

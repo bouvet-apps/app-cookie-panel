@@ -161,7 +161,7 @@
             <input ${(category.default ? "checked disabled" : "")} type="checkbox" id="${category.id}" aria-labelledby="${category.id}-title">
             <span class="cookie-panel-switch__toggle"></span>
           </label>
-          <h3 id="${category.id}-title">${category.title || ""}</h3>
+          <h2 id="${category.id}-title">${category.title || ""}</h2>
         </div>
         <p>${category.description || ""}</p>
         <hr/>
@@ -181,7 +181,7 @@
     const html = `
       <div role="dialog" class="cookie-panel-settings ${config.theme}" id="cookie-panel-settings" aria-labelledby="cookie-panel-settings-title">
         <div class="cookie-panel-settings__inner">
-          <h2 id="cookie-panel-settings-title">${config.title}</h2>
+          <h1 id="cookie-panel-settings-title">${config.title}</h1>
           <div class="cookie-panel-settings__categories">${renderCategories(config.categories)}</div>
           <div class="cookie-panel-settings__buttons">
           ${config.buttonOrder === "accept-left"
@@ -236,7 +236,7 @@
 
     const html = `<div class="cookie-panel-banner ${config.theme}" id="cookie-panel-banner">
     <div class="cookie-panel-banner__inner">
-      ${config.title ? `<h2 class="cookie-panel-banner__title">${config.title}</h2>` : ""}
+      ${config.title ? `<h1 class="cookie-panel-banner__title">${config.title}</h1>` : ""}
       ${config.description ? `<p class="cookie-panel-banner__description">${config.description}</p>` : ""}
       <div class="cookie-panel-banner__buttons">
         ${config.buttonOrder === "accept-left"
