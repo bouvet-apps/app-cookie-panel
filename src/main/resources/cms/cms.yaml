@@ -1,0 +1,256 @@
+kind: "CMS"
+form:
+  - type: "CheckBox"
+    name: "inheritConfig"
+    label: "Inherit config from main site"
+    helpText: "Use configuration from main site when sites are nested."
+    occurrences:
+      min: 0
+      max: 1
+    attributes:
+      alignment: "left"
+    alignment: "left"
+    default: "unchecked"
+  - type: "FieldSet"
+    label: "Content"
+    items:
+      - type: "TextLine"
+        name: "cookie-panel-text-title"
+        label: "Title"
+        occurrences:
+          min: 0
+          max: 1
+      - type: "TextArea"
+        name: "cookie-panel-text-description"
+        label: "Description"
+        occurrences:
+          min: 0
+          max: 1
+      - type: "TextLine"
+        name: "cookie-panel-settings-button-label"
+        label: "Settings button label"
+        occurrences:
+          min: 0
+          max: 1
+      - type: "TextLine"
+        name: "cookie-panel-accept-button-label"
+        label: "Accept all button label"
+        occurrences:
+          min: 0
+          max: 1
+      - type: "TextLine"
+        name: "cookie-panel-reject-button-label"
+        label: "Reject all button label"
+        occurrences:
+          min: 0
+          max: 1
+      - type: "TextLine"
+        name: "cookie-panel-save-button-label"
+        label: "Save button label"
+        occurrences:
+          min: 0
+          max: 1
+      - type: "TextLine"
+        name: "cookie-panel-read-more-link-label"
+        label: "Read more link label"
+        occurrences:
+          min: 0
+          max: 1
+      - type: "ContentSelector"
+        name: "cookie-panel-read-more-link"
+        label: "Read more link"
+        occurrences:
+          min: 0
+          max: 1
+  - type: "FieldSet"
+    label: "Visual"
+    items:
+      - type: "ComboBox"
+        name: "cookie-panel-theme"
+        label: "Theme"
+        occurrences:
+          min: 1
+          max: 1
+        options:
+          - value: "none"
+            label: "None (implement your own)"
+          - value: "light"
+            label: "Light"
+          - value: "dark"
+            label: "Dark"
+        default: "light"
+      - type: "RadioButton"
+        name: "cookie-panel-button-order"
+        label: "Button order"
+        occurrences:
+          min: 1
+          max: 1
+        options:
+          - value: "accept-left"
+            label: "Accept left, Read more right"
+          - value: "accept-right"
+            label: "Read more left, Accept right"
+        default: "accept-right"
+  - type: "FieldSet"
+    label: "Behavior"
+    items:
+      - type: "CheckBox"
+        name: "cookie-panel-reload-on-save"
+        label: "Reload page on cookie save"
+        helpText: "Reload the page when cookies are accepted or saved. Required for\
+          \ some integrations that need to initialize after consent."
+        occurrences:
+          min: 0
+          max: 1
+        attributes:
+          alignment: "left"
+        alignment: "left"
+        default: "unchecked"
+      - type: "FieldSet"
+        label: "Control cookie attributes"
+        items:
+          - type: "CheckBox"
+            name: "control-cookie-secure"
+            label: "Secure (send only over HTTPS)"
+            helpText: "Enable to mark the control cookie as Secure. Recommended for\
+              \ production HTTPS sites."
+            occurrences:
+              min: 0
+              max: 1
+            attributes:
+              alignment: "left"
+            alignment: "left"
+            default: "checked"
+          - type: "ComboBox"
+            name: "control-cookie-samesite"
+            label: "SameSite attribute for control cookie"
+            helpText: "Controls when the control cookie is sent with cross-site requests.\
+              \ Default is Lax for security."
+            occurrences:
+              min: 1
+              max: 1
+            options:
+              - value: "lax"
+                label: "Lax (default, recommended)"
+              - value: "strict"
+                label: "Strict (most restrictive)"
+              - value: "none"
+                label: "None (requires Secure=true)"
+            default: "lax"
+  - type: "FieldSet"
+    label: "Categories"
+    items:
+      - type: "FieldSet"
+        label: "Required cookies category"
+        items:
+          - type: "TextLine"
+            name: "cookie-panel-required-title"
+            label: "Title"
+            occurrences:
+              min: 0
+              max: 1
+          - type: "TextLine"
+            name: "cookie-panel-required-description"
+            label: "Description"
+            occurrences:
+              min: 0
+              max: 1
+      - type: "FieldSet"
+        label: "Custom categories"
+        items:
+          - type: "ItemSet"
+            name: "cookie-panel-categories"
+            label: "Category"
+            occurrences:
+              min: 0
+              max: 0
+            items:
+              - type: "TextLine"
+                name: "title"
+                label: "Title"
+                occurrences:
+                  min: 0
+                  max: 1
+              - type: "TextArea"
+                name: "description"
+                label: "Description"
+                occurrences:
+                  min: 0
+                  max: 1
+              - type: "ItemSet"
+                name: "cookies"
+                label: "Cookie"
+                occurrences:
+                  min: 1
+                  max: 0
+                items:
+                  - type: "TextLine"
+                    name: "cookie-name"
+                    label: "Cookie name"
+                    occurrences:
+                      min: 0
+                      max: 1
+                  - type: "TextLine"
+                    name: "cookie-value-accepted"
+                    label: "Cookie value: Accepted"
+                    occurrences:
+                      min: 0
+                      max: 1
+                  - type: "TextLine"
+                    name: "cookie-value-rejected"
+                    label: "Cookie value: Rejected"
+                    occurrences:
+                      min: 0
+                      max: 1
+                  - type: "CheckBox"
+                    name: "cookie-secure"
+                    label: "Secure (send only over HTTPS)"
+                    helpText: "Enable to mark this cookie as Secure. The browser will\
+                      \ only send this cookie over HTTPS connections. On HTTP, the\
+                      \ cookie will not be set by the browser."
+                    occurrences:
+                      min: 0
+                      max: 1
+                    attributes:
+                      alignment: "left"
+                    alignment: "left"
+                    default: "unchecked"
+                  - type: "ComboBox"
+                    name: "cookie-samesite"
+                    label: "SameSite attribute"
+                    helpText: "Controls when the cookie is sent with cross-site requests.\
+                      \ SameSite=None requires Secure=true. Learn more: https://developer.mozilla.org/en-US/docs/Web/Security/Practical_implementation_guides/Cookies"
+                    occurrences:
+                      min: 0
+                      max: 1
+                    options:
+                      - value: "unset"
+                        label: "Not set (omit attribute)"
+                      - value: "lax"
+                        label: "Lax (default for modern browsers)"
+                      - value: "strict"
+                        label: "Strict (most restrictive)"
+                      - value: "none"
+                        label: "None (requires Secure=true)"
+                    default: "lax"
+  - type: "FieldSet"
+    label: "Cookie panel cookie expiration"
+    items:
+      - type: "Long"
+        name: "control-cookie-expire-after-days"
+        label: "How many days should pass before the user will get the Cookie Panel\
+          \ displayed again"
+        occurrences:
+          min: 0
+          max: 1
+        default: 365
+      - type: "Long"
+        name: "control-cookie-invalidate-number"
+        label: "Number of times the Cookie Panel is forced displayed for the all users"
+        helpText: "This number is used to add a new control cookie, so it is possible\
+          \ to force display of the Cookie Panel to the user. Ex. if a category is\
+          \ edited or added."
+        occurrences:
+          min: 0
+          max: 1
+        default: 0
