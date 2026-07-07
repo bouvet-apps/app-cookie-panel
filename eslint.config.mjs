@@ -25,8 +25,6 @@ export default [
       "src/frontend/eslint.config.mjs"
     ]
   },
-  // Main config - extends airbnb-base
-  ...compat.extends("airbnb-base"),
   {
     files: ["**/*.{js,es6}"],
     plugins: {
