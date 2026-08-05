@@ -1,6 +1,6 @@
 const libs = {
   common: require("/lib/xp/common"),
-  content: require('/lib/xp/content')
+  content: require("/lib/xp/content")
 };
 
 const forceArray = (data) => {
@@ -58,8 +58,8 @@ exports.getCookieCategories = getCookieCategories;
 exports.getRootSiteConfig = function () {
   const rootNode = libs.content.query({
     count: 1,
-    contentTypes: ['portal:site'],
-    query: '_parentPath = "/content"'
+    contentTypes: ["portal:site"],
+    query: "_parentPath = \"/content\""
   }).hits[0];
 
   const siteConfig = [].concat(rootNode.data.siteConfig);
@@ -70,4 +70,4 @@ exports.getRootSiteConfig = function () {
     }
   }
   return {};
-}
+};
