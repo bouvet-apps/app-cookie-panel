@@ -12,10 +12,35 @@ other apps that they now can render their content.
 ## Features
 - Opt-in cookie consent for your users
 - Custom cookie groups/categories that users can enable/disable individually
+- Configurable cookie security attributes (Secure and SameSite)
 - Easy integration with other applications
 - Built-in light and dark themes to fit most site designs
 - Custom styling if you want something different from the built-in themes
 - Content Security Policy compatible
+
+## Configuring Cookie Security
+
+### Per-Cookie Attributes
+For each cookie in a category, you can configure:
+
+- **Secure**: When enabled, the cookie is only sent over HTTPS connections. On HTTP pages, the browser will not set the cookie.
+- **SameSite**: Controls when the cookie is sent with cross-site requests:
+  - `Lax` (default): Cookie is sent in same-site requests and top-level navigations. Provides CSRF protection while maintaining compatibility.
+  - `Strict`: Cookie is only sent in same-site requests. Most restrictive option.
+  - `None`: Cookie is sent in all contexts, including cross-site requests. **Requires `Secure=true`**. Use for cookies that need to work in cross-site contexts.
+  - Not set: Omits the attribute entirely (for legacy compatibility).
+
+### Control Cookie Attributes
+The internal control cookie used by Cookie Panel can also be configured with security attributes in the "Behavior" section:
+
+- **Secure**: Recommended to enable in production HTTPS environments.
+- **SameSite**: Defaults to `Lax` for security.
+
+### Important Notes
+- JavaScript-set cookies cannot use the `HttpOnly` attribute (server-only). If your security audit requires `HttpOnly`, you must use server-set cookies.
+- `SameSite=None` requires `Secure=true`. If you configure `SameSite=None` without `Secure`, the implementation will automatically enable `Secure`.
+- On HTTP (non-HTTPS) pages, cookies marked as `Secure` will not be persisted by the browser. This is expected behavior and not an error.
+- See [MDN: Practical implementation guides for cookies](https://developer.mozilla.org/en-US/docs/Web/Security/Practical_implementation_guides/Cookies) for more details.
 
 ## Customizing
 You can add CSS styling in your own applications to make the panels fit any design you want.
@@ -67,7 +92,8 @@ window.__RUN_ON_COOKIE_CONSENT__["com-enonic-app-ga_disabled"] = function () {
 
 ```
 
-A combonation of checking value of cookie on server and using `__RUN_ON_COOKIE_CONSENT__`should be used to optimize your app.
+It's important the RUN_ON_COOKIE_CONSENT function is set on the window object before the cookie panel app tries to execute it. The cookie panel front-end script that executes it is added to the body end,
+is deferred and runs on DOMContentLoaded, so your script needs to be loaded and executed before that.
 
 ## Integrating
 Cookie Panel works out of the box with these apps:
