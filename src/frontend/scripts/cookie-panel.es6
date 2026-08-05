@@ -30,10 +30,28 @@
     return b ? b.pop() : "";
   };
 
-  const setCookie = (name, value) => {
+  const setCookie = (name, value, options = {}) => {
     const date = new Date();
-    date.setTime(date.getTime() + ((config.expireControlCookieAfterDays || 365) * 24 * 60 * 60 * 1000));
-    document.cookie = `${name}=${value || ""}; Expires=${date.toUTCString()}; Max-Age=${(config.expireControlCookieAfterDays || 365) * 24 * 60 * 60}; Path=/`;
+    const days = config.expireControlCookieAfterDays || 365;
+    date.setTime(date.getTime() + (days * 24 * 60 * 60 * 1000));
+
+    let cookieString = `${name}=${value || ""}; Expires=${date.toUTCString()}; Max-Age=${days * 24 * 60 * 60}; Path=/`;
+
+    // Add Secure attribute if specified
+    if (options.secure === true) {
+      cookieString += "; Secure";
+    }
+
+    // Add SameSite attribute if specified
+    if (options.sameSite && options.sameSite !== "unset") {
+      // SameSite=None requires Secure — enforce silently as safety net
+      if (options.sameSite.toLowerCase() === "none" && !options.secure) {
+        cookieString += "; Secure";
+      }
+      cookieString += `; SameSite=${options.sameSite.charAt(0).toUpperCase()}${options.sameSite.slice(1).toLowerCase()}`;
+    }
+
+    document.cookie = cookieString;
   };
 
   const reloadOnSave = (forceReload) => {
@@ -46,9 +64,11 @@
     }
   };
 
+  const consentCallbacks = window.__RUN_ON_COOKIE_CONSENT__;
+
   const runOnCookieConsent = (cookieName) => {
-    if (window.__RUN_ON_COOKIE_CONSENT__ && window.__RUN_ON_COOKIE_CONSENT__[cookieName] && typeof window.__RUN_ON_COOKIE_CONSENT__[cookieName] === "function") {
-      window.__RUN_ON_COOKIE_CONSENT__[cookieName]();
+    if (consentCallbacks && consentCallbacks[cookieName] && typeof consentCallbacks[cookieName] === "function") {
+      consentCallbacks[cookieName]();
     }
   };
 
@@ -62,6 +82,16 @@
     });
   };
 
+  const getCookieOptions = (cookie) => ({
+    secure: cookie["cookie-secure"],
+    sameSite: cookie["cookie-samesite"]
+  });
+
+  const getControlCookieOptions = () => ({
+    secure: config.controlCookieSecure,
+    sameSite: config.controlCookieSameSite
+  });
+
   const saveCookieSettings = () => {
     let didDisable = false;
     forceArray(config.categories).forEach((category) => {
@@ -72,48 +102,66 @@
         if (!enabled && previousValue && previousValue !== value) {
           didDisable = true;
         }
-        if (enabled) runOnCookieConsent(cookie["cookie-name"], value);
-        setCookie(cookie["cookie-name"], value);
+        // Apply per-cookie secure and samesite attributes
+        const cookieOptions = getCookieOptions(cookie);
+        setCookie(cookie["cookie-name"], value, cookieOptions);
       });
     });
-    setCookie(config.controlCookie, "true");
+    // Set control cookie with configured attributes
+    const controlCookieOptions = getControlCookieOptions();
+    setCookie(config.controlCookie, "true", controlCookieOptions);
 
-    // if (config.page.reloadOnSave) document.location.href = removeParameter(document.location.href, "cookie_settings");
+    // Only run consent callbacks if page will NOT reload, to avoid double execution
+    if (!(config.page.reloadOnSave || didDisable)) {
+      handleConsentedCookies();
+    }
+
     reloadOnSave(didDisable);
   };
 
   const acceptAllCookies = () => {
     forceArray(config.categories).forEach((category) => {
       forceArray(category.cookies).forEach((cookie) => {
-        runOnCookieConsent(cookie["cookie-name"], cookie["cookie-value-accepted"]);
-        setCookie(cookie["cookie-name"], cookie["cookie-value-accepted"]);
+        // Apply per-cookie secure and samesite attributes
+        const cookieOptions = getCookieOptions(cookie);
+        setCookie(cookie["cookie-name"], cookie["cookie-value-accepted"], cookieOptions);
       });
     });
-    setCookie(config.controlCookie, "true");
+    // Set control cookie with configured attributes
+    const controlCookieOptions = getControlCookieOptions();
+    setCookie(config.controlCookie, "true", controlCookieOptions);
 
-    // if (config.page.reloadOnSave) document.location.href = removeParameter(document.location.href, "cookie_settings");
+    // Only run consent callbacks if page will NOT reload, to avoid double execution
+    if (!config.page.reloadOnSave) {
+      handleConsentedCookies();
+    }
+
     reloadOnSave();
   };
 
   const rejectAllCookies = () => {
     forceArray(config.categories).forEach((category) => {
       forceArray(category.cookies).forEach((cookie) => {
-        setCookie(cookie["cookie-name"], cookie["cookie-value-rejected"]);
+        // Apply per-cookie secure and samesite attributes
+        const cookieOptions = getCookieOptions(cookie);
+        setCookie(cookie["cookie-name"], cookie["cookie-value-rejected"], cookieOptions);
       });
     });
-    setCookie(config.controlCookie, "true");
+    // Set control cookie with configured attributes
+    const controlCookieOptions = getControlCookieOptions();
+    setCookie(config.controlCookie, "true", controlCookieOptions);
 
     reloadOnSave();
   };
 
-  const renderCategory = category => `
+  const renderCategory = (category) => `
       <div class="cookie-panel-settings__categories__category">
         <div class="cookie-panel-settings__categories__category-header">
           <label class="cookie-panel-switch">
             <input ${(category.default ? "checked disabled" : "")} type="checkbox" id="${category.id}" aria-labelledby="${category.id}-title">
             <span class="cookie-panel-switch__toggle"></span>
           </label>
-          <h3 id="${category.id}-title">${category.title || ""}</h3>
+          <h2 id="${category.id}-title">${category.title || ""}</h2>
         </div>
         <p>${category.description || ""}</p>
         <hr/>
@@ -133,7 +181,7 @@
     const html = `
       <div role="dialog" class="cookie-panel-settings ${config.theme}" id="cookie-panel-settings" aria-labelledby="cookie-panel-settings-title">
         <div class="cookie-panel-settings__inner">
-          <h2 id="cookie-panel-settings-title">${config.title}</h2>
+          <h1 id="cookie-panel-settings-title">${config.title}</h1>
           <div class="cookie-panel-settings__categories">${renderCategories(config.categories)}</div>
           <div class="cookie-panel-settings__buttons">
           ${config.buttonOrder === "accept-left"
@@ -188,7 +236,7 @@
 
     const html = `<div class="cookie-panel-banner ${config.theme}" id="cookie-panel-banner">
     <div class="cookie-panel-banner__inner">
-      ${config.title ? `<h2 class="cookie-panel-banner__title">${config.title}</h2>` : ""}
+      ${config.title ? `<h1 class="cookie-panel-banner__title">${config.title}</h1>` : ""}
       ${config.description ? `<p class="cookie-panel-banner__description">${config.description}</p>` : ""}
       <div class="cookie-panel-banner__buttons">
         ${config.buttonOrder === "accept-left"
@@ -245,7 +293,8 @@
     config = getData("config");
     config.page = getData("page-config");
 
-    if (config?.controlCookieInvalidateNumber !== undefined && config?.controlCookieInvalidateNumber !== 0) {
+    if (config.controlCookieInvalidateNumber !== undefined
+            && config.controlCookieInvalidateNumber !== 0) {
       config.controlCookie = `${config.controlCookie}${config.controlCookieInvalidateNumber}`;
     }
 

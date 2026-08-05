@@ -37,7 +37,9 @@ exports.responseProcessor = (req, res) => {
     readMoreLink: libs.portal.pageUrl({ id: siteConfig["cookie-panel-read-more-link"] }),
     categories: categories,
     expireControlCookieAfterDays: siteConfig["control-cookie-expire-after-days"],
-    controlCookieInvalidateNumber: siteConfig["control-cookie-invalidate-number"]
+    controlCookieInvalidateNumber: siteConfig["control-cookie-invalidate-number"],
+    controlCookieSecure: siteConfig["control-cookie-secure"] === true || siteConfig["control-cookie-secure"] === "true",
+    controlCookieSameSite: libs.util.normalizeSameSite(siteConfig["control-cookie-samesite"])
   };
 
   res.pageContributions.headEnd = libs.util.forceArray(res.pageContributions.headEnd);
@@ -52,6 +54,12 @@ exports.responseProcessor = (req, res) => {
 
   const html = render(model);
   res.pageContributions.bodyEnd.push(html);
+
+  const pageConfigModel = {
+    reloadOnSave: siteConfig["cookie-panel-reload-on-save"] === true || siteConfig["cookie-panel-reload-on-save"] === "true"
+  };
+  const pageConfigHtml = `<script type="application/json" data-cookie-panel-selector="page-config">${JSON.stringify(pageConfigModel)}</script>`;
+  res.pageContributions.bodyEnd.push(pageConfigHtml);
 
   return res;
 };
