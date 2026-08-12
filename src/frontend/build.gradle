@@ -21,7 +21,6 @@ task clean(type: NpmTask,
 
 repositories {
     mavenLocal()
-    jcenter()
 }
 
 node {
