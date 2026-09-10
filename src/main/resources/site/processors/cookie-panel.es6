@@ -36,7 +36,8 @@ exports.responseProcessor = (req, res) => {
     readMoreLink: libs.portal.pageUrl({ id: siteConfig["cookie-panel-read-more-link"] }),
     categories: categories,
     expireControlCookieAfterDays: siteConfig["control-cookie-expire-after-days"],
-    controlCookieInvalidateNumber: siteConfig["control-cookie-invalidate-number"]
+    controlCookieInvalidateNumber: siteConfig["control-cookie-invalidate-number"],
+    enableDeletion: siteConfig["cookie-panel-enable-deletion"]
   };
 
   res.pageContributions.headEnd = libs.util.forceArray(res.pageContributions.headEnd);

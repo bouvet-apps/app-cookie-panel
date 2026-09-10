@@ -55,6 +55,8 @@
   };
 
   const deleteOptionalCookies = () => {
+    if (!config.enableDeletion) return;
+
     const requiredCookies = forceArray(config.categories)
       .flatMap(category => forceArray(category.requiredCookies));
 

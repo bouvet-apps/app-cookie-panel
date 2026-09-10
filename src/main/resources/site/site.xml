@@ -113,6 +113,19 @@
         </field-set>
       </items>
     </field-set>
+    
+    <field-set>
+      <label>Cookie deletion</label>
+      <items>
+        <input name="cookie-panel-enable-deletion" type="CheckBox">
+          <label>Enable deletion of cookies</label>
+          <help-text>When enabled, all cookies except required cookies
+             and the cookies defined in the categories above are deleted
+              when the user rejects or disables a category.</help-text>
+        </input>
+      </items>
+    </field-set>
+    
     <field-set>
       <label>Cookie panel cookie expiration</label>
       <items>
